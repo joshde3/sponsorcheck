@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: sponsorcheck
+  datasource:
+    # Values come from environment variables (see .env.example). No secrets in git.
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/sponsorcheck}
+    username: ${DATABASE_USER:sponsorcheck}
+    password: ${DATABASE_PASSWORD:}
+    hikari:
+      maximum-pool-size: 5   # small instance, few concurrent requests
+
+server:
+  port: ${PORT:8080}   # Railway sets PORT
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health   # only /actuator/health is public
