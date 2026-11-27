@@ -22,4 +22,13 @@ cd backend && ./gradlew bootRun
 curl localhost:8080/actuator/health
 ```
 
+Run one import (what the Railway cron job runs), then exit:
+
+```bash
+cd backend && ./gradlew bootJar
+java -jar build/libs/sponsorcheck-backend-0.1.0.jar \
+  --spring.main.web-application-type=none --sponsorcheck.import.source=GB
+# exit code 0 = new data is live; see the import_run table for details
+```
+
 Tests start their own Postgres in Docker: `cd backend && ./gradlew test`.

@@ -20,10 +20,11 @@ Status: **Accepted**. Plan approved by Joshua on 22 Nov 2026.
 - **Why:** The normaliser and schema are shared, so matching at query time is guaranteed to use the same rules as at import time. A crashed import can't take the API down.
 - **Trade-off:** Two Railway services (API + cron import) instead of one.
 
-## D4. Staging table plus atomic swap, with validation
-- **Decision:** Load into staging, check header, row count (within ~20% of last good import) and a few known sponsors, then swap in one transaction.
-- **Why:** A changed source format must never wipe live data. Old data plus an alert beats empty results.
-- **Trade-off:** Data can be a day or a month stale when a source breaks, so every answer carries `dataAsOf`.
+## D4. Validate in memory, then replace a country's rows in one transaction
+- **Decision:** The import downloads and parses the whole register, then checks it: the header must match exactly, the row count must be at least a minimum (UK: 50,000), and it must not have dropped more than 20% since the last good import. Only then does one transaction delete that country's old rows and insert the new ones.
+- **Why:** Postgres readers keep seeing the old rows until the transaction commits (MVCC), so the API never sees a half-loaded register. If anything fails, it rolls back. A separate staging table (the first idea) adds nothing over this, so it was dropped.
+- **Trade-off:** The whole file sits in memory during the import (about 11 MB for the UK, well within the job's memory). Data can be a day or a month stale when a source breaks, so every answer carries `dataAsOf`.
+- **Changed:** 27 Nov 2026, replacing "staging table plus atomic swap".
 
 ## D5. Hosting and scheduling: Railway Hobby plan ($5/month)
 - **Decision:** One Railway project with three parts: an always-on Spring Boot API service, an import service on a Railway Cron Schedule (UTC, runs and exits), and Railway Postgres with `pg_trgm`. (Joshua's choice, 22 Nov 2026, replacing the GCP proposal.)
@@ -90,3 +91,12 @@ Status: **Accepted**. Plan approved by Joshua on 22 Nov 2026.
 - **Decision:** Repositories use `JdbcClient` with hand-written SQL.
 - **Why:** The core queries are bulk loads, a table swap and `pg_trgm` similarity searches. Those are SQL features, and JPA would hide them behind native queries anyway. Plain SQL is easier to explain and to tune with `EXPLAIN`.
 - **Trade-off:** No automatic entity mapping. We write small row mappers by hand (Java records keep them short).
+
+## D19. One database row per register line, and per "trading as" name
+- **Decision:** The UK CSV lists an organisation once per route (for example Skilled Worker and Global Business Mobility), and we store each line as it is. A line "X Ltd t/a Y" is stored twice, once under each name, with the same `legal_name`.
+- **Why:** Faithful to the source, so a row count can be compared with the file. A job post may show either the legal name or the trading name.
+- **Trade-off:** The same company can match several rows. The API will group them by `legal_name` and list the routes (weekend 2).
+
+## D20. Import outcomes: SUCCEEDED, REJECTED, FAILED, recorded in `import_run`
+- **Decision:** REJECTED means the download worked but the data looked wrong (format changed, too few rows). FAILED means something crashed (network, bug). Both keep the old data. The import command exits with code 0 only on SUCCEEDED.
+- **Why:** The two need different responses. REJECTED usually means updating the parser; FAILED is often temporary. The exit code lets Railway show the run as failed, and the healthchecks.io ping (D6) is sent only on success.

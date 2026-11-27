@@ -28,8 +28,15 @@ dependencies {
     implementation("org.flywaydb:flyway-database-postgresql")
     runtimeOnly("org.postgresql:postgresql")
 
+    // Downloading the registers (RestClient)
+    implementation("org.springframework.boot:spring-boot-starter-restclient")
+
+    // Parsing the UK register CSV
+    implementation("org.apache.commons:commons-csv:1.14.1")
+
     // Tests against a real Postgres in Docker (D17)
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-restclient-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.testcontainers:testcontainers-junit-jupiter")
     testImplementation("org.testcontainers:testcontainers-postgresql")
