@@ -5,23 +5,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.postgresql.PostgreSQLContainer;
+import org.springframework.context.annotation.Import;
 
 /**
  * Starts the whole application against a real Postgres 17 (D17)
  * and checks that the Flyway migration created what the matcher needs.
  */
 @SpringBootTest
-@Testcontainers
+@Import(TestcontainersConfig.class)
 class SchemaMigrationTest {
-
-    @Container
-    @ServiceConnection // points spring.datasource.* at this container
-    static PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:17");
 
     @Autowired
     JdbcClient jdbc;

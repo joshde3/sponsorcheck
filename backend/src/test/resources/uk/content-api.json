@@ -1,0 +1,33 @@
+{
+  "base_path": "/government/publications/register-of-licensed-sponsors-workers",
+  "title": "Register of licensed sponsors: workers",
+  "public_updated_at": "2026-11-27T10:34:57+00:00",
+  "details": {
+    "attachments": [
+      {
+        "accessible": false,
+        "alternative_format_contact_email": "alternativeformats@homeoffice.gov.uk",
+        "assets": [
+          {
+            "asset_manager_id": "6b095b82c29db7468056c17e",
+            "filename": "SP_-_Worker_and_Temporary_Worker_Web_Register_-_2026-11-27.csv"
+          }
+        ],
+        "attachment_type": "file",
+        "command_paper_number": "",
+        "content_type": "text/csv",
+        "file_size": 10908924,
+        "filename": "SP_-_Worker_and_Temporary_Worker_Web_Register_-_2026-11-27.csv",
+        "hoc_paper_number": "",
+        "id": "9641818",
+        "isbn": "",
+        "locale": "en",
+        "title": "Register of Worker and Temporary Worker licensed sponsors",
+        "unique_reference": "",
+        "unnumbered_command_paper": false,
+        "unnumbered_hoc_paper": false,
+        "url": "https://assets.publishing.service.gov.uk/media/6b095b82c29db7468056c17e/SP_-_Worker_and_Temporary_Worker_Web_Register_-_2026-11-27.csv"
+      }
+    ]
+  }
+}
