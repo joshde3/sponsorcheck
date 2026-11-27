@@ -1,0 +1,14 @@
+# Local Postgres for development: `docker compose up -d`
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: sponsorcheck
+      POSTGRES_USER: sponsorcheck
+      POSTGRES_PASSWORD: change-me-locally   # local only, matches .env.example
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata:

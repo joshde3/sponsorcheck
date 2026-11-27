@@ -1,0 +1,21 @@
+# Build output
+build/
+.gradle/
+out/
+*.class
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+
+# Local secrets: never commit these (see .env.example)
+.env
+*.env.local
+
+# OS
+.DS_Store
+
+# Extension build output
+extension/dist/
+node_modules/
